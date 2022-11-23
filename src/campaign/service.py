@@ -27,5 +27,5 @@ def get_campaigns_client(db,client_id):
     campaigns = db.query(models.Campaign).\
     where(models.Campaign.client_id==client_id ).all()
     if not campaigns:
-        raise exceptions.customer_error_exception("Client",admin_id)
+        raise exceptions.customer_error_exception("Customer",client_id)
     return campaigns
