@@ -5,7 +5,7 @@ from sqlalchemy.orm import joinedload
 
 def get_customers(db):
     customers=db.query(models.Client).all()
-    if not clients:
+    if not customers:
         raise exceptions.server_error_exception
     return customers
 
