@@ -3,7 +3,7 @@ from src.customer import service
 from src.customer.schemas import Customer
 from config.db import Session
 from typing import List
-from src.customer import dependencies as dp
+import dependencies as dp
 
 customerRouter=APIRouter(tags=["Customer"])
 
