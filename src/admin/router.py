@@ -18,4 +18,7 @@ async def get_admin(admin_id:str,session:Session=Depends(dp.get_db)):
 @adminRouter.put('/administrators/{admin_id}',response_model=AdminBase)
 async def update_admin(admin_id:str,admin:AdminUpdate,session:Session=Depends(dp.get_db)):
     return service.update_admin(session,admin_id,admin)
-    
+
+@adminRouter.put('/administrators/state/{admin_id}')
+async def delete_admin(admin_id:str,session:Session=Depends(dp.get_db)):
+    return service.delete_admin(session,admin_id)   

@@ -20,6 +20,7 @@ class Admin(Base):
     minute_value=Column(Float, nullable=True)
     created_at=Column(DateTime,nullable=False)
     user_id=Column(String(24),ForeignKey("users.id") ,nullable=False)
+    user=relationship("User")
 
 class User(Base):
     __tablename__ = "users"
