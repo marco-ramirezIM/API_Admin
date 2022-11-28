@@ -24,6 +24,8 @@ class AdminUpdate(BaseModel):
     company_name:str=Field(...)
     minute_value:Optional[float]=0
 
+
+
     
 
 
