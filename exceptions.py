@@ -9,6 +9,6 @@ server_error_exception = HTTPException(
 
 def entity_error_exception(type,id):
     return HTTPException(
-    status_code = status.HTTP_500_INTERNAL_SERVER_ERROR,
+    status_code = status.HTTP_404_NOT_FOUND,
     detail=f"The {type} with the id {id} is not in the database."
     )
