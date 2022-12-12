@@ -3,7 +3,7 @@ from src.admin import service
 from src.admin.schemas import AdminBase,AdminUpdate
 from config.db import Session
 from typing import List
-from src.admin import dependencies as dp
+import dependencies as dp
 
 adminRouter=APIRouter(tags=["Admin"])
 

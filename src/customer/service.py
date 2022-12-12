@@ -1,6 +1,6 @@
 
 from src.customer import models,schemas
-from src.customer import exceptions
+import exceptions
 from sqlalchemy.orm import joinedload
 
 def get_customers(db):
@@ -13,7 +13,7 @@ def get_customer(db,id):
     customer = db.query(models.Client).\
     where(models.Client.id == id).first()
     if not customer:
-        raise exceptions.customer_error_exception("Customer",id)
+        raise exceptions.entity_error_exception("Customer",id)
     return customer
    
 
@@ -21,7 +21,7 @@ def get_customers_admin(db,admin_id):
     customers = db.query(models.Client).\
     where(models.Client.created_by==admin_id ).all()
     if not customers:
-        raise exceptions.customer_error_exception("Admin",admin_id)
+        raise exceptions.entity_error_exception("Admin",admin_id)
     return customers
 
 def get_customer_auditor():

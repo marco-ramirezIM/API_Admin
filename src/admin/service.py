@@ -1,5 +1,5 @@
 from src.admin import models,schemas
-from src.admin import exceptions
+import exceptions
 from sqlalchemy.orm import joinedload
 from src.admin.schemas import AdminBase,AdminUpdate
 
@@ -14,7 +14,7 @@ def get_admin(db,id):
     admin = db.query(models.Admin).\
     where(models.Admin.id == id).first()
     if not admin:
-        raise exceptions.customer_error_exception("Administrator",id)
+        raise exceptions.entity_error_exception("Administrator",id)
     return admin
 
 def update_admin(db,id,admin)-> AdminUpdate:

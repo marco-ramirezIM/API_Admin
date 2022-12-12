@@ -3,7 +3,7 @@ from src.campaign import service
 from src.campaign.schemas import Campaign
 from config.db import Session
 from typing import List
-from src.campaign import dependencies as dp
+import dependencies as dp
 
 campaignRouter=APIRouter(tags=["Campaign"])
 
