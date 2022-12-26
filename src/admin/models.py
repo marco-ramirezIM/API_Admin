@@ -18,7 +18,7 @@ class Admin(Base):
     identification= Column(String(20),nullable=False )
     company_name=Column(String(50) ,nullable=False)
     minute_value=Column(Float, nullable=True)
-    created_at=Column(DateTime,nullable=False)
+    created_at=Column(DateTime,nullable=True)
     user_id=Column(String(24),ForeignKey("users.id") ,nullable=False)
     user=relationship("User")
 
