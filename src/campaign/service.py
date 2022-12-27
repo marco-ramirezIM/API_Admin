@@ -29,3 +29,6 @@ def get_campaigns_client(db,client_id):
     if not campaigns:
         raise exceptions.customer_error_exception("Customer",client_id)
     return campaigns
+
+def create_campaign():
+    return{"campaign":"created"}

@@ -22,3 +22,7 @@ async def get_campaigns_admin(admin_id:str,session:Session=Depends(dp.get_db)):
 @campaignRouter.get('/campaigns/client/{client_id}',response_model=List[Campaign])
 async def get_campaigns_client(client_id:str,session:Session=Depends(dp.get_db)):
     return service.get_campaigns_client(session,client_id)
+
+@campaignRouter.post('/campaigns',response_model=Campaign)
+async def create_campaign():
+    return service.create_campaign()

@@ -1,4 +1,3 @@
-
 from src.customer import models,schemas
 import exceptions
 from sqlalchemy.orm import joinedload
@@ -31,7 +30,15 @@ def add_customer():
     return {"added:cluster"}
 
 def update_customer():
-    return {"updated:cluster"}
+    customer_check=get_customer(db,id)
+    if not customer:
+        raise exceptions.entity_error_exception("Customer",id)
+    db.query(models.Customer) \
+        .filter(models.Customer.id == id) \
+        .update({"name":customer.name, "photo":customer.photo}) 
+    db.commit()
+    return customer_check
+
 
 def delete_customer():
     return {"deleted:cluster"}

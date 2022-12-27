@@ -4,7 +4,6 @@ from typing import Optional,List
 from pydantic import Field
 
 class AdminCreate(BaseModel):
-    id:str
     phone:str=Field(...)
     photo:str=Field(...)
     company_name:str=Field(...)

@@ -1,3 +1,4 @@
+import random, string
 from src.admin import models,schemas
 import exceptions
 from sqlalchemy.orm import joinedload
@@ -70,7 +71,8 @@ def delete_admin(db,id):
     return {f"the user of the admin with id {admin_check.id} was disabled"}
 
 def create_admin(user,admin,db):
-    new_admin=Admin(id=admin.id,phone=admin.phone,
+    new_admin=Admin(id=''.join(random.choices(string.ascii_letters + string.digits, k=24))
+    ,phone=admin.phone,
     photo=admin.photo,company_name=admin.company_name,
     identification=admin.identification,created_at=datetime.now(),
     minute_value=admin.minute_value,user_id=admin.user_id)
