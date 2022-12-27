@@ -19,3 +19,7 @@ async def get_customer(customer_id:str,session:Session=Depends(dp.get_db)):
 async def get_customers_admin(admin_id:str,session:Session=Depends(dp.get_db)):
     return service.get_customers_admin(session,admin_id)
 
+@customerRouter.put('/customers/{customer_id}')
+async def delete_customer(customer_id:str,session:Session=Depends(dp.get_db)):
+    return service.delete_customer(session,customer_id)
+

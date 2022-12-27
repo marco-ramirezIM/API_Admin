@@ -31,7 +31,7 @@ def add_customer():
 
 def update_customer():
     customer_check=get_customer(db,id)
-    if not customer:
+    if not customer_check:
         raise exceptions.entity_error_exception("Customer",id)
     db.query(models.Customer) \
         .filter(models.Customer.id == id) \
@@ -40,6 +40,14 @@ def update_customer():
     return customer_check
 
 
-def delete_customer():
-    return {"deleted:cluster"}
+def delete_customer(db,id):
+    customer_check=get_customer(db,id)
+    if not customer_check:
+        raise exceptions.entity_error_exception("Customer",id)
+    db.query(models.Client) \
+    .filter(models.Client.id == customer_check.id) \
+        .update({"state":0} ) 
+    db.commit()
+
+    return {f"the user of the customer with id {customer_check.id} was disabled"}
 
