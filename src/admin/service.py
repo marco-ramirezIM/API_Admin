@@ -35,9 +35,7 @@ def __validate_update_company_name(db,admin,id):
         if admin.company_name!=admin_check.company_name and check_company_name:
             return True
 
-    
-          
-        
+
 def get_administrators(db):
     administrators=db.query(models.Admin).\
     join(models.User).\
@@ -85,6 +83,9 @@ def create_admin(user,admin,db):
     photo=admin.photo,company_name=admin.company_name,
     identification=admin.identification,created_at=datetime.now(),
     minute_value=admin.minute_value,user_id=admin.user_id)
+    user = db.query(models.User).filter(models.User.id == admin.user_id).first()
+    if not user:
+        raise exceptions.entity_error_exception("User",admin.user_id)
     if  __validate_duplicated_create(db,new_admin):
         raise duplicated_value_exception
     db.add(new_admin)
