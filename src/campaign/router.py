@@ -3,7 +3,7 @@ from src.campaign import service
 from src.campaign.schemas import Campaign
 from config.db import Session
 from typing import List
-from src.campaign import dependencies as dp
+import dependencies as dp
 
 campaignRouter=APIRouter(tags=["Campaign"])
 
@@ -22,3 +22,7 @@ async def get_campaigns_admin(admin_id:str,session:Session=Depends(dp.get_db)):
 @campaignRouter.get('/campaigns/client/{client_id}',response_model=List[Campaign])
 async def get_campaigns_client(client_id:str,session:Session=Depends(dp.get_db)):
     return service.get_campaigns_client(session,client_id)
+
+@campaignRouter.post('/campaigns')
+async def create_campaign():
+    return service.create_campaign()

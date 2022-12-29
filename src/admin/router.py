@@ -1,9 +1,9 @@
 from fastapi import APIRouter,Depends
 from src.admin import service
-from src.admin.schemas import AdminBase,AdminUpdate
+from src.admin.schemas import AdminBase,AdminCreate,AdminUpdate,UserBase
 from config.db import Session
 from typing import List
-from src.admin import dependencies as dp
+import dependencies as dp
 
 adminRouter=APIRouter(tags=["Admin"])
 
@@ -21,4 +21,8 @@ async def update_admin(admin_id:str,admin:AdminUpdate,session:Session=Depends(dp
 
 @adminRouter.put('/administrators/state/{admin_id}')
 async def delete_admin(admin_id:str,session:Session=Depends(dp.get_db)):
-    return service.delete_admin(session,admin_id)   
+    return service.delete_admin(session,admin_id)
+
+@adminRouter.post('/administrators',response_model=AdminBase)
+async def create_admin(user:UserBase,admin:AdminCreate,session:Session=Depends(dp.get_db)):
+    return service.create_admin(user,admin,session)
