@@ -23,6 +23,6 @@ async def get_campaigns_admin(admin_id:str,session:Session=Depends(dp.get_db)):
 async def get_campaigns_client(client_id:str,session:Session=Depends(dp.get_db)):
     return service.get_campaigns_client(session,client_id)
 
-@campaignRouter.post('/campaigns',response_model=Campaign)
+@campaignRouter.post('/campaigns')
 async def create_campaign():
     return service.create_campaign()
