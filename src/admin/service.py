@@ -37,10 +37,7 @@ def __validate_update_company_name(db,admin,id):
 
 
 def get_administrators(db):
-    administrators=db.query(models.Admin).\
-    join(models.User).\
-    where(models.User.state==1).\
-    all()
+    administrators=db.query(models.Admin).all()
     if not administrators:
         raise exceptions.server_error_exception
     return administrators
@@ -62,7 +59,11 @@ def update_admin(db,id,admin)-> AdminUpdate:
         raise duplicated_value_exception
     db.query(models.Admin) \
         .filter(models.Admin.id == id) \
-        .update({"phone":admin.phone, "photo":admin.photo, "company_name": admin.company_name, "minute_value": admin.minute_value}) 
+        .update({"first_name":admin.first_name,"last_name":admin.last_name,
+        "phone":admin.phone,"identification":admin.identification,
+        "email":admin.email,"password":admin.password,
+        "state":admin.state, "photo":admin.photo,
+        "company_name": admin.company_name}) 
     db.commit()
     return admin_check
 
@@ -70,22 +71,21 @@ def delete_admin(db,id):
     admin_check=get_admin(db,id)
     if not admin_check:
         raise exceptions.entity_error_exception("Administrator",id)
-    db.query(models.User) \
-    .filter(models.User.id == admin_check.user_id) \
+    db.query(models.Admin) \
+    .filter(models.Admin.id == admin_check.id) \
         .update({"state":0} ) 
     db.commit()
 
-    return {f"the user of the admin with id {admin_check.id} was disabled"}
+    return {f"the Admin of the admin with id {admin_check.id} was disabled"}
 
-def create_admin(user,admin,db):
-    new_admin=Admin(id=''.join(random.choices(string.ascii_letters + string.digits, k=24))
-    ,phone=admin.phone,
-    photo=admin.photo,company_name=admin.company_name,
-    identification=admin.identification,created_at=datetime.now(),
-    minute_value=admin.minute_value,user_id=admin.user_id)
-    user = db.query(models.User).filter(models.User.id == admin.user_id).first()
-    if not user:
-        raise exceptions.entity_error_exception("User",admin.user_id)
+def create_admin(admin,db):
+    new_admin=Admin(id=''.join(random.choices(string.ascii_letters + string.digits, k=24)),
+    role_id=2 ,first_name=admin.first_name,last_name=admin.last_name,
+    phone=admin.phone,identification=admin.identification,
+    email=admin.email,password=admin.password,
+    state=1, photo=admin.photo,
+    company_name=admin.company_name,created_at=datetime.now(),
+    )
     if  __validate_duplicated_create(db,new_admin):
         raise duplicated_value_exception
     db.add(new_admin)
