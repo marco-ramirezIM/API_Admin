@@ -1,9 +1,8 @@
 from pydantic import BaseModel
 from datetime import datetime
-from typing import Optional,List
 from pydantic import Field
 
-class AdminCreate(BaseModel):
+class CompanyCreate(BaseModel):
     first_name:str=Field(...)
     last_name :str=Field(...)
     phone :str=Field(...)
@@ -17,7 +16,7 @@ class AdminCreate(BaseModel):
     class Config:
         orm_mode = True
 
-class AdminBase(BaseModel):
+class CompanyBase(BaseModel):
     id:str
     role_id :str=Field(...)
     first_name:str=Field(...)
@@ -33,7 +32,7 @@ class AdminBase(BaseModel):
     class Config:
         orm_mode = True
 
-class AdminUpdate(BaseModel):
+class CompanyUpdate(BaseModel):
     first_name:str=Field(...)
     last_name :str=Field(...)
     phone :str=Field(...)

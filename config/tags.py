@@ -1,7 +1,7 @@
 tags_metadata=[
 {
-    "name": "Admin",
-    "description": "Services for the Admin module"
+    "name": "Compañia",
+    "description": "Servicios para el modulo de compañias"
 },
 {
     "name": "Campaign",
