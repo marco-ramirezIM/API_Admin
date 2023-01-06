@@ -1,8 +1,7 @@
 from src.campaign.models import Campaign, CampaingAccess
 from fastapi import HTTPException
 import src.campaign.exceptions as campaing_exceptions
-from src.admin.models import User
-from sqlalchemy import and_
+from src.companies.models import Company as User
 import random
 import string
 
@@ -32,10 +31,10 @@ def validate_users(db, users: list):
         raise campaing_exceptions.validate_user_exception
 
 
-def add_users_to_campaing(db, users: list, campaign_id: str):
+def add_users_to_campaing(db, users_id: list, campaign_id: str):
     """If there are one or more users in the field campaign.users_list, we loop through every single user id and then insert them in the table campaigns_access"""
     try:
-        for user in users:
+        for user in users_id:
             result = CampaingAccess(
                 id="".join(random.choices(string.ascii_letters + string.digits, k=24)),
                 user_id=user,

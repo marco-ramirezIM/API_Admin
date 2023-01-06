@@ -1,7 +1,6 @@
 from src.campaign.models import Campaign, CampaingAccess
 from src.customer.models import Client
 from src.campaign.schemas import UpdateCampaign
-from src.admin.models import User
 import src.campaign.dependencies as campaing_dependencies
 import src.campaign.exceptions as campaing_exceptions
 import exceptions
@@ -81,26 +80,18 @@ def create_campaign(campaign, db):
         if elem not in check_users:
             users_not_inserted.append(elem)
 
+    if len(campaign.users_list) != len(check_users):
+        raise campaing_exceptions.invalid_user_exception(users_not_inserted)
+
     db.add(new_campaing)
     db.commit()
+
     campaing_dependencies.add_users_to_campaing(db, check_users, new_campaing.id)
 
     campaing_check = get_campaign(db, new_campaing.id)
 
-    if len(users_not_inserted) > 0:
-
-        return {
-            "status_code": 200,
-            "message": "Campaign created successfully",
-            "body": campaing_check,
-            "Users not added to the campaign because they doesn't exist in the data base": users_not_inserted,
-        }
-
-    return {
-        "status_code": 200,
-        "message": "Campaign created successfully",
-        "body": campaing_check,
-    }
+    return campaing_check
+    
 
 
 def edit_campaign(db, id, campaign):
@@ -133,6 +124,9 @@ def edit_campaign(db, id, campaign):
         if elem not in check_users:
             users_not_inserted.append(elem)
 
+    if len(new_campaing.users_list) != len(check_users):
+        raise campaing_exceptions.invalid_user_exception_on_update(users_not_inserted)
+
     db.query(Campaign).filter(Campaign.id == id).update(
         {
             "photo": new_campaing.photo,
@@ -145,16 +139,6 @@ def edit_campaign(db, id, campaign):
 
     updated_campaing = get_campaign(db, id)
 
-    if len(users_not_inserted) > 0:
-        return {
-            "status_code": 200,
-            "message": "Campaign updated successfully",
-            "body": updated_campaing,
-            "Users not added to the campaign because they doesn't exist in the data base": users_not_inserted,
-        }
 
-    return {
-        "status_code": 200,
-        "message": "Campaign updated successfully",
-        "body": updated_campaing,
-    }
+    return updated_campaing
+    

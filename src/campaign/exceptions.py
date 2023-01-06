@@ -12,6 +12,16 @@ def invalid_user_role_exception(name):
         status_code=403, detail=f"User {name} doesn't have the required role"
     )
 
+def invalid_user_exception(id_list):
+    return HTTPException(
+        status_code=404, detail=f"The campaing can't be created because the user(s) with the id {id_list} doesn't exist"
+    )
+
+def invalid_user_exception_on_update(id_list):
+    return HTTPException(
+        status_code=404, detail=f"The campaing can't be updated because the user(s) with the id {id_list} doesn't exist"
+    )
+
 
 duplicated_name_exception = HTTPException(
     403, "The name of the campaign you're trying to create already exist"

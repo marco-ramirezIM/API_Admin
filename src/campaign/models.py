@@ -21,6 +21,6 @@ class Campaign(Base):
 class CampaingAccess(Base):
     __tablename__ = "campaigns_access"
     id = Column(String, primary_key=True)
-    user_id = Column(String(24), ForeignKey("users.id"), nullable=False)
+    user_id = Column(String(24), ForeignKey("administrators.id"), nullable=False)
     campaing_id = Column(String(24), ForeignKey("campaigns.id"), nullable=False)
-    user = relationship("User")
+    user = relationship("Company")

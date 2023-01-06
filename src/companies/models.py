@@ -18,7 +18,6 @@ class Company(Base):
     company_name = Column(String(50), nullable=False)
     created_at = Column(DateTime, nullable=True)
 
-
 class Role(Base):
     __tablename__ = "roles"
     id = Column(Integer, primary_key=True)
