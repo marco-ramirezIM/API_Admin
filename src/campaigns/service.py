@@ -1,32 +1,28 @@
-from src.campaign.models import Campaign, CampaingAccess
-from src.customer.models import Client
-from src.campaign.schemas import UpdateCampaign
-import src.campaign.dependencies as campaing_dependencies
-import src.campaign.exceptions as campaing_exceptions
+from src.campaigns.models import Campaign, CampaignAccess
+from src.groupings.models import Grouping
+from src.campaigns.schemas import UpdateCampaign
+import src.campaigns.dependencies as campaing_dependencies
+import src.campaigns.exceptions as campaing_exceptions
 import exceptions
-import sqlalchemy as sql
-import random
-import string
+import uuid
 from datetime import datetime
+import exceptions
 
 
 def get_campaigns(db):
-    campaigns = db.query(Campaign).all()
-    if not campaigns:
-        raise exceptions.server_error_exception
-    return campaigns
+    return db.query(Campaign).all()
 
 
 def get_campaign(db, id):
     campaign = db.query(Campaign).where(Campaign.id == id).first()
     if not campaign:
-        raise campaing_exceptions.campaing_not_found("Campaign", id)
+        raise exceptions.entity_not_found_exception("Campaña", id)
     return campaign
 
 
 def get_campaigns_grouping(db, grouping_id):
 
-    grouping = db.query(Client).filter(Client.id == grouping_id).all()
+    grouping = db.query(Grouping).filter(Grouping.id == grouping_id).all()
 
     if not grouping:
         raise campaing_exceptions.grouping_not_found_exception
@@ -40,8 +36,8 @@ def get_campaings_agent(db, agent_id):
 
     campaigns = (
         db.query(Campaign)
-        .join(CampaingAccess)
-        .where(CampaingAccess.user_id == agent_id)
+        .join(CampaignAccess)
+        .where(CampaignAccess.user_id == agent_id)
         .all()
     )
 
@@ -50,7 +46,7 @@ def get_campaings_agent(db, agent_id):
 
 def create_campaign(campaign, db):
     new_campaing = Campaign(
-        id="".join(random.choices(string.ascii_letters + string.digits, k=24)),
+        id=str(uuid.uuid4()),
         name=campaign.name,
         photo=campaign.photo,
         state=campaign.state,
@@ -61,7 +57,7 @@ def create_campaign(campaign, db):
         created_at=datetime.now(),
     )
 
-    grouping = db.query(Client).filter(Client.id == campaign.grouping_id).first()
+    grouping = db.query(Grouping).filter(Grouping.id == campaign.grouping_id).first()
 
     if not grouping:
         raise campaing_exceptions.grouping_not_found_exception
@@ -69,6 +65,7 @@ def create_campaign(campaign, db):
     if campaing_dependencies.validate_duplicated_create(db, new_campaing):
         raise campaing_exceptions.duplicated_name_exception
 
+    check_users = []
     if len(campaign.users_list) > 0:
         check_users = campaing_dependencies.validate_users(db, campaign.users_list)
 
@@ -91,7 +88,6 @@ def create_campaign(campaign, db):
     campaing_check = get_campaign(db, new_campaing.id)
 
     return campaing_check
-    
 
 
 def edit_campaign(db, id, campaign):
@@ -135,10 +131,7 @@ def edit_campaign(db, id, campaign):
             "is_mac": new_campaing.is_mac,
         }
     )
+
     db.commit()
-
     updated_campaing = get_campaign(db, id)
-
-
     return updated_campaing
-    

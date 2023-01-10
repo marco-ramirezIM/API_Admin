@@ -1,17 +1,14 @@
 import exceptions
 from src.companies.schemas import CompanyUpdate
-from src.companies.models import Company
+from src.companies.models import Company, User
 from src.companies.exceptions import duplicated_value_exception
 import src.companies.dependencies as company_dep
 from datetime import datetime
-from config import b2c
+from azure import b2c
 
 
 def get_companies(db):
-    companies = db.query(Company).all()
-    if not companies:
-        raise exceptions.server_error_exception
-    return companies
+    return db.query(Company).all()
 
 
 def get_company(db, id):
@@ -22,7 +19,6 @@ def get_company(db, id):
 
 
 def update_company(db, id, company) -> CompanyUpdate:
-    company_check = get_company(db, id)
     company_dep.verify_password(company.password)
     if not company:
         raise exceptions.entity_not_found_exception("Compañia", id)
@@ -33,9 +29,9 @@ def update_company(db, id, company) -> CompanyUpdate:
     if company_dep.validate_update_email(db, company, id):
         raise exceptions.duplicated_exception("Email")
     if company_dep.validate_update_identification(db, company, id):
-         raise exceptions.duplicated_exception("Documento de identificacion")
+        raise exceptions.duplicated_exception("Documento de identificacion")
     b2c.graph_update(id, company)
-    db.query(Company).filter(Company.id == id).update(
+    db.query(User).filter(User.id == id).update(
         {
             "first_name": company.first_name,
             "last_name": company.last_name,
@@ -49,7 +45,7 @@ def update_company(db, id, company) -> CompanyUpdate:
         }
     )
     db.commit()
-    return company_check
+    return {"id": id, **dict(company)}
 
 
 def create_company(company, db):
@@ -59,7 +55,7 @@ def create_company(company, db):
     new_id = b2c.graph_create(company)
     if not new_id:
         raise exceptions.empty_fields_exception
-    new_company = Company(
+    new_company = User(
         id=new_id,
         role_id=2,
         first_name=company.first_name,
@@ -75,5 +71,4 @@ def create_company(company, db):
     )
     db.add(new_company)
     db.commit()
-    company_check = get_company(db, new_company.id)
-    return company_check
+    return new_company

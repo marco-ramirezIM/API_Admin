@@ -121,11 +121,11 @@ class UpdateCampaign(BaseModel):
         return is_mac
 
 
-class CampaingAccess(BaseModel):
+class CampaignAccess(BaseModel):
     id: str = Field(...)
     user_id: str = Field(...)
     grouping_id: str = Field(...)
-    campaing_id: str = Field(...)
+    campaign_id: str = Field(...)
 
     class Config:
         orm_mode = True

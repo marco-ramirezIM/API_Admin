@@ -59,11 +59,10 @@ def graph_create(user):
             **__user_structure(user),
             "passwordPolicies": "DisablePasswordExpiration",
         }
-        id_user = requests.post(url=url, headers=headers, json=user).json()
-        return id_user["id"]
+        response = requests.post(url=url, headers=headers, json=user).json()
+        return response["id"]
 
     except Exception:
-
         raise exceptions.b2c_create_exception
 
 
@@ -78,6 +77,5 @@ def graph_update(id, user):
         requests.patch(url=url, headers=headers, json=update_user)
         
 
-    except Exception as e:
-        print(e)
+    except Exception:
         raise exceptions.b2c_update_exception
