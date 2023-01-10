@@ -20,6 +20,12 @@ def invalid_user_exception_on_update(id_list):
         detail=f"La campaña no se puede actualizar porque los usuarios con el id {id_list} no existen",
     )
 
+def blob_does_not_exist_exception(name):
+    return HTTPException(
+        status_code=404,
+        detail=f"La imagen con el nombre {name} no existe",
+    )
+
 
 duplicated_name_exception = HTTPException(
     403, "El nombre de la campaña que intenta crear ya existe"

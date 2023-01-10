@@ -1,20 +1,47 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, Form
 from src.campaigns import service
 from src.campaigns.schemas import Campaign, CampaingCreate, UpdateCampaign
 from config.db import Session
-from typing import List
+from typing import List, Union
+import src.campaigns.exceptions as campaign_exceptions
 import dependencies as dp
 import exceptions
 
-campaignRouter=APIRouter(tags=["Campañas"])
+campaignRouter = APIRouter(tags=["Campañas"])
 
 # Create Campaigns
 @campaignRouter.post("/campaigns")
 async def create_campaign(
-    campaing: CampaingCreate, session: Session = Depends(dp.get_db)
+    name: str = Form(...),
+    state: bool = Form(...),
+    country: str = Form(...),
+    users: Union[List[str], None] = None,
+    is_conversation: bool = Form(...),
+    is_mac: bool = Form(...),
+    grouping_id: str = Form(...),
+    file: Union[UploadFile, None] = None,
+    session: Session = Depends(dp.get_db),
 ):
     try:
-        return service.create_campaign(campaing, session)
+        if not file:
+            raise exceptions.file_not_found_exception
+
+        data = await file.read()
+        dp.validate_file(file.content_type, data)
+
+        split_users = users[0].split(",")
+    
+        campaign = CampaingCreate(
+            name=name,
+            state=state,
+            country=country,
+            users=split_users,
+            is_conversation=is_conversation,
+            is_mac=is_mac,
+            grouping_id=grouping_id,
+        )
+
+        return service.create_campaign(campaign, data, session)
     except HTTPException as e:
         raise e
     except Exception as e:
@@ -22,12 +49,30 @@ async def create_campaign(
 
 
 # Update Campaign
-@campaignRouter.put("/campaigns")
+@campaignRouter.put("/campaigns/{campaign_id}")
 async def update_campaign(
-    campaign: UpdateCampaign, id: str, session: Session = Depends(dp.get_db)
+    campaign_id: str,
+    state: bool = Form(...),
+    users: Union[List[str], None] = None,
+    is_conversation: bool = Form(...),
+    is_mac: bool = Form(...),
+    file: Union[UploadFile, None] = None,
+    session: Session = Depends(dp.get_db),
 ):
     try:
-        return service.edit_campaign(session, id, campaign)
+        data = ""
+        if file:
+            data = await file.read()
+            dp.validate_file(file.content_type, data)
+
+        campaign = UpdateCampaign(
+            state=state,
+            users=users,
+            is_conversation=is_conversation,
+            is_mac=is_mac,
+        )
+
+        return service.edit_campaign(session, campaign_id, data, campaign)
     except HTTPException as e:
         raise e
     except Exception:
@@ -66,7 +111,9 @@ async def get_campaigns_grouping(
     except HTTPException as e:
         raise e
     except Exception:
-        raise exceptions.entity_error_exception("obtener las campañas asociadas a un grupo")
+        raise exceptions.entity_error_exception(
+            "obtener las campañas asociadas a un grupo"
+        )
 
 
 # Get campaigns by agent ID
@@ -77,4 +124,6 @@ async def get_campaigns_agent(agent_id: str, session: Session = Depends(dp.get_d
     except HTTPException as e:
         raise e
     except Exception:
-        raise exceptions.entity_error_exception("obtener las campañas asociadas a un agente")
+        raise exceptions.entity_error_exception(
+            "obtener las campañas asociadas a un agente"
+        )

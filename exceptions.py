@@ -7,6 +7,9 @@ def entity_not_found_exception(type, id):
         detail=f"El/la {type} con el id {id} no existe en la base de datos.",
     )
 
+def entity_invalid_uuid_exception(id):
+    return HTTPException(403, f"The id {id} is not a valid UUID")
+
 
 def entity_error_exception(error):
     return HTTPException(

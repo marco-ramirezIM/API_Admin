@@ -9,22 +9,30 @@ def validate_duplicated_create(db, campaing):
     campaing_name = db.query(Campaign).where(Campaign.name == campaing.name).first()
     return campaing_name
 
+def is_valid_uuid(val):
+    try:
+        uuid.UUID(str(val))
+    except ValueError:
+        raise exceptions.entity_invalid_uuid_exception(val)
+
 
 def validate_users(db, users: list):
-    try:
-        id_list = []
-        users_result = db.query(User).filter(User.id.in_(users)).all()
-        if not users_result:
-            raise campaing_exceptions.user_not_found_exception
+    #try:
 
-        for user in users_result:
-            if user.role_id != 4:
-                raise campaing_exceptions.invalid_user_role_exception(user.first_name)
-            id_list.append(user.id)
+    id_list = []
+    users_result = db.query(User).filter(User.id.in_(users)).all()
+    print(users_result)
+    if not users_result:
+        raise campaing_exceptions.user_not_found_exception
 
-        return id_list
-    except Exception:
-        raise exceptions.entity_error_exception("encontrar el usuario", id)
+    for user in users_result:
+        if user.role_id != 4:
+            raise campaing_exceptions.invalid_user_role_exception(user.first_name)
+        id_list.append(user.id)
+
+    return id_list
+    ''' except Exception:
+        raise exceptions.entity_error_exception("encontrar el usuario") '''
 
 
 def add_users_to_campaing(db, users_id: list, campaign_id: str):
@@ -32,10 +40,12 @@ def add_users_to_campaing(db, users_id: list, campaign_id: str):
     try:
         __added_campaign_access_record(users=users_id, campaign_id=campaign_id, db=db)
     except Exception:
-        raise exceptions.entity_error_exception("agregar las usuarios a la campaña", id)
+        raise exceptions.entity_error_exception("agregar las usuarios a la campaña")
 
 
 def delete_users_of_campaign_on_update(db, campaign_id: str):
+
+    print("Dependencies",campaign_id)
 
     db.query(CampaignAccess).filter(CampaignAccess.campaign_id == campaign_id).delete()
     db.commit()

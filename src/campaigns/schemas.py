@@ -1,6 +1,6 @@
 from pydantic import BaseModel, validator, Field
 from datetime import datetime
-from typing import List
+from typing import List, Union
 import re
 
 
@@ -8,10 +8,10 @@ class Campaign(BaseModel):
     id: str
     name: str = Field(...)
     photo: str = Field(...)
-    state: int = Field(default=1)
+    state: bool = Field(...)
     country: str = Field(...)
-    is_conversation: int = Field(default=0)
-    is_mac: int = Field(default=0)
+    is_conversation: bool = Field(...)
+    is_mac: bool = Field(...)
     grouping_id: str = Field(...)
     created_at: datetime = datetime.now()
 
@@ -21,12 +21,11 @@ class Campaign(BaseModel):
 
 class CampaingCreate(BaseModel):
     name: str = Field(...)
-    photo: str = Field(...)
-    state: int = Field(default=1)
+    state: bool = Field(...)
     country: str = Field(...)
-    users_list: List = Field(...)
-    is_conversation: int = Field(default=0)
-    is_mac: int = Field(default=0)
+    users : Union[List[str], None] = None
+    is_conversation: bool = Field(...)
+    is_mac: bool = Field(...)
     grouping_id: str = Field(...)
 
     class Config:
@@ -40,13 +39,6 @@ class CampaingCreate(BaseModel):
                 "The name of the campaign can't contain special characters or numbers and can't be empty"
             )
         return nm
-
-    @validator("photo")
-    def validate_photo(cls, photo: str):
-        ph = photo.strip()
-        if ph == "":
-            raise ValueError("The photo of the campaign can't be empty")
-        return ph
 
     @validator("state")
     def validate_state(cls, state: int):
@@ -84,39 +76,31 @@ class CampaingCreate(BaseModel):
 
 
 class UpdateCampaign(BaseModel):
-    photo: str = Field(...)
-    state: int = Field(default=1)
-    users_list: List = Field(...)
-    is_conversation: int = Field(default=0)
-    is_mac: int = Field(default=0)
+    state: bool = Field(...)
+    users: List[str] = Field(...)
+    is_conversation: bool = Field(...)
+    is_mac: bool = Field(...)
 
     class Config:
         orm_mode = True
 
-    @validator("photo")
-    def validate_photo(cls, photo: str):
-        ph = photo.strip()
-        if ph == "":
-            raise ValueError("The photo of the campaign can't be empty")
-        return ph
-
     @validator("state")
-    def validate_state(cls, state: int):
-        if state != 1 and state != 0:
+    def validate_state(cls, state: bool):
+        if state != True and state != False:
             raise ValueError("The state of the campaign can't be different from 1 or 0")
         return state
 
     @validator("is_conversation")
-    def validate_is_conversation(cls, is_conversation: int):
-        if is_conversation != 1 and is_conversation != 0:
+    def validate_is_conversation(cls, is_conversation: bool):
+        if is_conversation != True and is_conversation != False:
             raise ValueError(
                 "The campaign's conversation state can't be different from 1 or 0"
             )
         return is_conversation
 
     @validator("is_mac")
-    def validate_is_mac(cls, is_mac: int):
-        if is_mac != 1 and is_mac != 0:
+    def validate_is_mac(cls, is_mac: bool):
+        if is_mac != True and is_mac != False:
             raise ValueError("The campaign's mac state can't be different from 1 or 0")
         return is_mac
 
