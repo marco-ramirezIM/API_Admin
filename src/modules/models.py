@@ -11,11 +11,3 @@ class Module(Base):
     category_id = Column(UUID, ForeignKey("categories.id"), nullable=False)
     module = Column(String(50), nullable=False)
     created_at = Column(DateTime, nullable=True)
-
-
-class Category(Base):
-    __tablename__ = "categories"
-    id = Column(UUID, primary_key=True)
-    campaign_id = Column(UUID, ForeignKey("campaigns.id"), nullable=False)
-    category = Column(String(50), nullable=False)
-    created_at = Column(DateTime, nullable=True)

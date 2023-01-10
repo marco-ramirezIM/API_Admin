@@ -21,7 +21,7 @@ class ModuleList(BaseModel):
 
 
 class ModuleUpdateOrCreate(BaseModel):
-    module: str = Field(...)
+    module: str = Field(..., min_length=5)
     category_id: str = Field(...)
     campaign_id: str = Field(...)
 
