@@ -12,5 +12,5 @@ def upload_blob(filename: str, container: str, data: BinaryIO):
         container=container, blob=filename
     )
 
-    blob_client.upload_blob(data)
+    blob_client.upload_blob(data, overwrite=True)
     return blob_client.url

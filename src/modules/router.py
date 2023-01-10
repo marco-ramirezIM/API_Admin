@@ -47,8 +47,7 @@ async def update_module_by_id(
         return service.update_module_by_id(session, id, data_module)
     except HTTPException as e:
         raise e
-    except Exception as e:
-        print(e)
+    except Exception:
         raise exceptions.entity_error_exception("actualizar el modulo")
 
 

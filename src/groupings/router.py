@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, Form
 import src.groupings.service as service
-from src.groupings.schemas import GroupingBase, GroupingCreate
+from src.groupings.schemas import GroupingBase, GroupingCreate, GroupingUpdate, GroupingManagementBase
 from config.db import Session
 from typing import List, Union
 import dependencies as dp
@@ -28,11 +28,20 @@ async def get_grouping(grouping_id: str, session: Session = Depends(dp.get_db)):
     except Exception:
         raise exceptions.entity_error_exception("obtener la agrupación")
 
+@groupingRouter.get("/groupings-by-company/{company_id}", response_model=List[GroupingManagementBase])
+async def get_grouping_by_user(company_id: str, session: Session = Depends(dp.get_db)):
+    try:
+        return service.get_grouping_by_user(session, company_id)
+    except HTTPException as e:
+        raise e
+    except Exception:
+        raise exceptions.entity_error_exception("obtener las agrupaciones de un usuario")
 
-@groupingRouter.post("/groupings")
+@groupingRouter.post("/groupings", response_model=GroupingBase)
 async def create_grouping(
     name: str = Form(...),
     state: bool = Form(...),
+    associated_company: str = Form(...),
     users: Union[List[str], None] = None,
     file: Union[UploadFile, None] = None,
     session: Session = Depends(dp.get_db),
@@ -45,10 +54,35 @@ async def create_grouping(
         data = await file.read()
         dp.validate_file(file.content_type, data)
 
-        grouping = GroupingCreate(name=name, state=state, users=users)
+        grouping = GroupingCreate(name=name, associated_company=associated_company, state=state, users=users)
         return service.create_grouping(grouping, data, session)
 
     except HTTPException as e:
         raise e
     except Exception:
-        raise exceptions.entity_error_exception("Crear la agrupación")
+        raise exceptions.entity_error_exception("crear la agrupación")
+
+@groupingRouter.put("/groupings/{grouping_id}", response_model=GroupingBase)
+async def update_grouping(
+    grouping_id: str,
+    name: str = Form(...),
+    state: bool = Form(...),
+    users: Union[List[str], None] = None,
+    file: Union[UploadFile, None] = None,
+    session: Session = Depends(dp.get_db),
+):
+    try:
+
+        data = None
+        if file:
+            data = await file.read()
+            dp.validate_file(file.content_type, data)
+
+        grouping = GroupingUpdate(name=name, state=state, users=users)
+        return service.update_grouping(grouping_id, grouping, data, session)
+
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        print(e)
+        raise exceptions.entity_error_exception("actualizar la agrupación")
