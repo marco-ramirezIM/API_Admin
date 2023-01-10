@@ -1,4 +1,5 @@
-from src.modules.models import Module, Category
+from src.modules.models import Module
+from src.categories.models import Category
 from src.campaigns.service import get_campaign
 
 

@@ -17,6 +17,7 @@ import uuid
 
 
 def get_all_modules_by_campaign(campaign_id, db):
+    validate_campaign(db, campaign_id)
     return db.query(Module).where(Module.campaign_id == campaign_id).all()
 
 

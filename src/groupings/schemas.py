@@ -26,7 +26,7 @@ class GroupingBase(BaseModel):
         orm_mode = True
 
 class GroupingCreate(BaseModel):
-    name: str = Field(...)
+    name: str = Field(..., min_length=5)
     state: bool = Field(...)
     associated_company: str = Field(...)
     users: Union[List[str], None] = None
@@ -35,7 +35,7 @@ class GroupingCreate(BaseModel):
         orm_mode = True
     
 class GroupingUpdate(BaseModel):
-    name: str = Field(...)
+    name: str = Field(..., min_length=5)
     state: bool = Field(...)
     users: Union[List[str], None] = None
     

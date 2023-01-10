@@ -5,6 +5,7 @@ from src.companies.router import companyRouter
 from src.campaigns.router import campaignRouter
 from src.groupings.router import groupingRouter
 from src.modules.router import modulesRouter
+from src.categories.router import categoryRouter
 from config.setup import settings
 
 
@@ -30,3 +31,4 @@ app.include_router(companyRouter, prefix=settings.URL_PREFIX)
 app.include_router(campaignRouter, prefix=settings.URL_PREFIX)
 app.include_router(groupingRouter, prefix=settings.URL_PREFIX)
 app.include_router(modulesRouter, prefix=settings.URL_PREFIX)
+app.include_router(categoryRouter, prefix=settings.URL_PREFIX)
