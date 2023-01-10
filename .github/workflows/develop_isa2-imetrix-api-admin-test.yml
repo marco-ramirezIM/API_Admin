@@ -1,12 +1,12 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy container app to Azure Web App - isa2-imetrix-api-admin-qa
+name: Build and deploy container app to Azure Web App - isa2-imetrix-api-admin-test
 
 on:
   push:
     branches:
-      - qa
+      - develop
   workflow_dispatch:
 
 jobs:
@@ -23,14 +23,14 @@ jobs:
       uses: docker/login-action@v1
       with:
         registry: https://isa2container.azurecr.io/
-        username: ${{ secrets.AzureAppService_ContainerUsername_6b7cb05c1b08417b97978e6be5de82b2 }}
-        password: ${{ secrets.AzureAppService_ContainerPassword_ef71f7e1394d44d18da58503fe0d72ac }}
+        username: ${{ secrets.AzureAppService_ContainerUsername_e48ca753dbad45fda90a9795d53bdf0d }}
+        password: ${{ secrets.AzureAppService_ContainerPassword_23a86fcbd31340a4a2a9f701cc6d3262 }}
 
     - name: Build and push container image to registry
       uses: docker/build-push-action@v2
       with:
         push: true
-        tags: isa2container.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_6b7cb05c1b08417b97978e6be5de82b2 }}/api-admin:${{ github.sha }}
+        tags: isa2container.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_e48ca753dbad45fda90a9795d53bdf0d }}/api-admin:${{ github.sha }}
         file: ./Dockerfile
 
   deploy:
@@ -45,7 +45,7 @@ jobs:
       id: deploy-to-webapp
       uses: azure/webapps-deploy@v2
       with:
-        app-name: 'isa2-imetrix-api-admin-qa'
+        app-name: 'isa2-imetrix-api-admin-test'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_5714175a9b274bce967968d1f52c9879 }}
-        images: 'isa2container.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_6b7cb05c1b08417b97978e6be5de82b2 }}/api-admin:${{ github.sha }}'
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_429c2ff2c1f2483d9e9b2a5e24d9e953 }}
+        images: 'isa2container.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_e48ca753dbad45fda90a9795d53bdf0d }}/api-admin:${{ github.sha }}'
