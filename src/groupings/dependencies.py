@@ -1,3 +1,5 @@
+from typing import List, Union
+from src.groupings.schemas import GroupingCreate, GroupingUpdate
 from src.groupings.models import Grouping
 from src.companies.models import User
 from src.groupings.exceptions import (
@@ -23,7 +25,7 @@ def validate_company_user(db, user_id):
 
 
 def validate_auditors(db, users):
-    if users is not None:
+    if len(users) > 0:
         users_result = db.query(User).filter(User.id.in_(users)).all()
         if not users_result:
             raise campaing_exceptions.user_not_found_exception
@@ -33,3 +35,19 @@ def validate_auditors(db, users):
         )
         if len(invalid_users) > 0:
             raise invalid_audit_user_role_exception(" , ".join(invalid_users))
+
+
+async def grouping_create_parameters(
+    name: str,
+    state: bool,
+    associated_company: str,
+    users: Union[List[str], None] = None,
+):
+    return GroupingCreate(name=name, associated_company=associated_company, state=state, users=users)
+
+async def grouping_update_parameters(
+    name: str,
+    state: bool,
+    users: Union[List[str], None] = None,
+):
+    return GroupingUpdate(name=name, state=state, users=users)
