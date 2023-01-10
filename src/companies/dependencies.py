@@ -65,7 +65,7 @@ def validate_update_identification(db, company, id):
 
 def verify_password(password):
     password_pattern = (
-        "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
+        "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&-])[A-Za-z\d@$!%*?&-]{8,}$"
     )
     if not re.search(password_pattern, password):
         raise password_exception

@@ -4,14 +4,14 @@ from pydantic import Field
 
 
 class CompanyCreate(BaseModel):
-    first_name: str = Field(...)
-    last_name: str = Field(...)
-    phone: str = Field(...)
-    identification: str = Field(...)
-    email: str = Field(...)
-    password: str = Field(...)
+    first_name: str = Field(...,min_length=4)
+    last_name: str = Field(...,min_length=4)
+    phone: str = Field(...,min_length=4)
+    identification: str = Field(...,min_length=4)
+    email: str = Field(...,min_length=6)
+    password: str = Field(...,min_length=8)
     photo: str = Field(...)
-    company_name: str = Field(...)
+    company_name: str = Field(...,min_length=3)
 
     class Config:
         orm_mode = True
@@ -47,12 +47,12 @@ class UserBase(BaseModel):
 
 
 class CompanyUpdate(BaseModel):
-    first_name: str = Field(...)
-    last_name: str = Field(...)
-    phone: str = Field(...)
-    identification: str = Field(...)
-    email: str = Field(...)
-    password: str = Field(...)
+    first_name: str = Field(...,min_length=4)
+    last_name: str = Field(...,min_length=4)
+    phone: str = Field(...,min_length=4)
+    identification: str = Field(...,min_length=4)
+    email: str = Field(...,min_length=6)
+    password: str = Field(...,min_length=8)
     state: int = Field(default=1)
     photo: str = Field(...)
-    company_name: str = Field(...)
+    company_name: str = Field(...,min_length=3)
