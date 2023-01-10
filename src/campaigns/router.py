@@ -29,13 +29,14 @@ async def create_campaign(
         data = await file.read()
         dp.validate_file(file.content_type, data)
 
-        split_users = users[0].split(",")
-    
+        if users[0] != "" or users != None:
+            split_users = users[0].split(",")
+
         campaign = CampaingCreate(
             name=name,
             state=state,
             country=country,
-            users=split_users,
+            users=split_users if split_users else users,
             is_conversation=is_conversation,
             is_mac=is_mac,
             grouping_id=grouping_id,
@@ -52,6 +53,7 @@ async def create_campaign(
 @campaignRouter.put("/campaigns/{campaign_id}")
 async def update_campaign(
     campaign_id: str,
+    name: str = Form(...),
     state: bool = Form(...),
     users: Union[List[str], None] = None,
     is_conversation: bool = Form(...),
@@ -65,9 +67,16 @@ async def update_campaign(
             data = await file.read()
             dp.validate_file(file.content_type, data)
 
+        if not users:
+            raise campaign_exceptions.users_list_exception
+
+        if users[0] != "" or users != None:
+            split_users = users[0].split(",")
+
         campaign = UpdateCampaign(
+            name=name,
             state=state,
-            users=users,
+            users=split_users if split_users else users,
             is_conversation=is_conversation,
             is_mac=is_mac,
         )

@@ -23,7 +23,7 @@ class CampaingCreate(BaseModel):
     name: str = Field(...)
     state: bool = Field(...)
     country: str = Field(...)
-    users : Union[List[str], None] = None
+    users: Union[List[str], None] = None
     is_conversation: bool = Field(...)
     is_mac: bool = Field(...)
     grouping_id: str = Field(...)
@@ -76,6 +76,7 @@ class CampaingCreate(BaseModel):
 
 
 class UpdateCampaign(BaseModel):
+    name: str = Field(...)
     state: bool = Field(...)
     users: List[str] = Field(...)
     is_conversation: bool = Field(...)
@@ -83,6 +84,15 @@ class UpdateCampaign(BaseModel):
 
     class Config:
         orm_mode = True
+
+    @validator("name")
+    def validate_name(cls, name: str):
+        nm = name.strip()
+        if bool(re.match("^[a-zA-Z]+( [a-zA-Z]+)*$", nm)) == False:
+            raise ValueError(
+                "The name of the campaign can't contain special characters or numbers and can't be empty"
+            )
+        return nm
 
     @validator("state")
     def validate_state(cls, state: bool):

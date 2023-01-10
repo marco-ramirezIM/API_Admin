@@ -12,16 +12,15 @@ def validate_duplicated_create(db, campaing):
 def is_valid_uuid(val):
     try:
         uuid.UUID(str(val))
+        return True
     except ValueError:
-        raise exceptions.entity_invalid_uuid_exception(val)
+        return False
 
 
 def validate_users(db, users: list):
     #try:
-
     id_list = []
     users_result = db.query(User).filter(User.id.in_(users)).all()
-    print(users_result)
     if not users_result:
         raise campaing_exceptions.user_not_found_exception
 

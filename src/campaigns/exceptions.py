@@ -33,3 +33,4 @@ duplicated_name_exception = HTTPException(
 
 grouping_not_found_exception = HTTPException(404, "Cliente no encontrado")
 user_not_found_exception = HTTPException(404, "Usuarios no encontrados")
+users_list_exception = HTTPException(403, "La lista de usuarios no puede ser de tipo None")

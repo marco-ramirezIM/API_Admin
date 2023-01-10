@@ -48,7 +48,7 @@ def get_campaings_agent(db, agent_id):
 
 
 def create_campaign(campaign, data, db):
-    return
+    
     id = str(uuid.uuid4())
     url_photo = blob.upload_blob(id + ".png", container_name, data)
     new_campaing = Campaign(
@@ -63,7 +63,9 @@ def create_campaign(campaign, data, db):
         created_at=datetime.now(),
     )
 
-    campaing_dependencies.is_valid_uuid(campaign.grouping_id)
+    grouping_id_check = campaing_dependencies.is_valid_uuid(campaign.grouping_id)
+    if not grouping_id_check:
+        raise exceptions.entity_invalid_uuid_exception(check_id)
 
     grouping = db.query(Grouping).filter(Grouping.id == campaign.grouping_id).first()
 
@@ -93,7 +95,6 @@ def create_campaign(campaign, data, db):
 
     if len(campaign.users) != len(check_users):
         raise campaing_exceptions.invalid_user_exception(users_not_inserted)
-    return
     db.add(new_campaing)
     db.commit()
 
@@ -105,22 +106,20 @@ def create_campaign(campaign, data, db):
 
 
 def edit_campaign(db, id, data, campaign):
-
+    
     check_campaign_id = campaing_dependencies.is_valid_uuid(id)
 
     if not check_campaign_id:
         raise exceptions.entity_invalid_uuid_exception(id)
 
-    print("Imagen", type(data))
-    print("Campaña", campaign)
     # first we validate if the campaign to edit exist
     campaign_to_update = get_campaign(db, id)
 
     if campaign_to_update:
         cp_id = campaign_to_update.id
-        cp_photo = campaign_to_update.photo
 
     new_campaing = UpdateCampaign(
+        name=campaign.name,
         state=campaign.state,
         users=campaign.users,
         is_conversation=campaign.is_conversation,
@@ -151,7 +150,8 @@ def edit_campaign(db, id, data, campaign):
         blob.delete_blob(cp_id + ".png")
         url_photo = blob.upload_blob(id + ".png", container_name, data)
         db.query(Campaign).filter(Campaign.id == id).update(
-            {
+            {   
+                "name": new_campaing.name,
                 "photo": url_photo,
                 "state": new_state,
                 "is_conversation": new_is_conversation,
@@ -161,6 +161,7 @@ def edit_campaign(db, id, data, campaign):
 
     db.query(Campaign).filter(Campaign.id == id).update(
         {
+            "name": new_campaing.name,
             "state": new_state,
             "is_conversation": new_is_conversation,
             "is_mac": new_is_mac,
