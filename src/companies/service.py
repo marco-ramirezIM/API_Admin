@@ -5,7 +5,9 @@ from src.companies.exceptions import duplicated_value_exception
 import src.companies.dependencies as company_dep
 from datetime import datetime
 from azure import b2c
+from passlib.context import CryptContext
 
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def get_companies(db):
     return db.query(Company).all()
@@ -31,6 +33,7 @@ def update_company(db, id, company) -> CompanyUpdate:
     if company_dep.validate_update_identification(db, company, id):
         raise exceptions.duplicated_exception("Documento de identificacion")
     b2c.graph_update(id, company)
+    encrypt_password = pwd_context.hash(company.password)
     db.query(User).filter(User.id == id).update(
         {
             "first_name": company.first_name,
@@ -38,7 +41,7 @@ def update_company(db, id, company) -> CompanyUpdate:
             "phone": company.phone,
             "identification": company.identification,
             "email": company.email,
-            "password": company.password,
+            "password": encrypt_password,
             "state": company.state,
             "photo": company.photo,
             "company_name": company.company_name,
@@ -55,6 +58,7 @@ def create_company(company, db):
     new_id = b2c.graph_create(company)
     if not new_id:
         raise exceptions.empty_fields_exception
+    encrypt_password = pwd_context.hash(company.password)
     new_company = User(
         id=new_id,
         role_id=2,
@@ -63,7 +67,7 @@ def create_company(company, db):
         phone=company.phone,
         identification=company.identification,
         email=company.email,
-        password=company.password,
+        password=encrypt_password,
         state=1,
         photo=company.photo,
         company_name=company.company_name,
