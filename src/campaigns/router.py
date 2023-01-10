@@ -1,12 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException
-from src.campaign import service
-import src.campaign.exceptions as campaign_exceptions
-from src.campaign.schemas import Campaign, CampaingCreate, UpdateCampaign
+from src.campaigns import service
+from src.campaigns.schemas import Campaign, CampaingCreate, UpdateCampaign
 from config.db import Session
 from typing import List
 import dependencies as dp
+import exceptions
 
-campaignRouter = APIRouter(tags=["Campaign"])
+campaignRouter=APIRouter(tags=["Campañas"])
 
 # Create Campaigns
 @campaignRouter.post("/campaigns")
@@ -17,8 +17,8 @@ async def create_campaign(
         return service.create_campaign(campaing, session)
     except HTTPException as e:
         raise e
-    except Exception:
-        raise campaign_exceptions.create_campaign_exception
+    except Exception as e:
+        raise exceptions.entity_error_exception("crear la campaña")
 
 
 # Update Campaign
@@ -31,7 +31,7 @@ async def update_campaign(
     except HTTPException as e:
         raise e
     except Exception:
-        raise campaign_exceptions.update_campaign_exception
+        raise exceptions.entity_error_exception("actualizar la campaña")
 
 
 # Get all Campaigns
@@ -42,7 +42,7 @@ async def get_campaigns(session: Session = Depends(dp.get_db)):
     except HTTPException as e:
         raise e
     except Exception:
-        raise campaign_exceptions.get_campaigns_exception
+        raise exceptions.entity_error_exception("obtener las campañas")
 
 
 # Get campaign by ID
@@ -53,7 +53,7 @@ async def get_campaign(campaign_id: str, session: Session = Depends(dp.get_db)):
     except HTTPException as e:
         raise e
     except Exception:
-        raise campaign_exceptions.get_campaign_by_id_exception
+        raise exceptions.entity_error_exception("obtener la campaña")
 
 
 # Get campaigns by grouping ID
@@ -66,7 +66,7 @@ async def get_campaigns_grouping(
     except HTTPException as e:
         raise e
     except Exception:
-        raise campaign_exceptions.get_groupings_campaigns_exception
+        raise exceptions.entity_error_exception("obtener las campañas asociadas a un grupo")
 
 
 # Get campaigns by agent ID
@@ -77,4 +77,4 @@ async def get_campaigns_agent(agent_id: str, session: Session = Depends(dp.get_d
     except HTTPException as e:
         raise e
     except Exception:
-        raise campaign_exceptions.get_agents_campaigns_exception
+        raise exceptions.entity_error_exception("obtener las campañas asociadas a un agente")

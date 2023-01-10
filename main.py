@@ -2,8 +2,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from config.tags import tags_metadata
 from src.companies.router import companyRouter
-from src.campaign.router import campaignRouter
-from src.customer.router import customerRouter
+from src.campaigns.router import campaignRouter
+from src.groupings.router import groupingRouter
+from src.modules.router import modulesRouter
 from config.setup import settings
 
 
@@ -27,4 +28,5 @@ app.add_middleware(
 
 app.include_router(companyRouter, prefix=settings.URL_PREFIX)
 app.include_router(campaignRouter, prefix=settings.URL_PREFIX)
-app.include_router(customerRouter, prefix=settings.URL_PREFIX)
+app.include_router(groupingRouter, prefix=settings.URL_PREFIX)
+app.include_router(modulesRouter, prefix=settings.URL_PREFIX)

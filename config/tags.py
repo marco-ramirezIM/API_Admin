@@ -1,21 +1,5 @@
-tags_metadata=[
-{
-    "name": "Compañia",
-    "description": "Servicios para el modulo de compañias"
-},
-{
-    "name": "Campaign",
-    "description": "Services for the Campaign module"
-},
-{
-    "name": "Customer",
-    "description": "Services for the Customer module"
-},
-{
-    "name": "Super_Admin",
-    "description": "Services for the Super_Admin module"
-},
-{
-    "name": "Auditor",
-    "description": "Services for the Auditor module"
-}]
+tags_metadata = [
+    {"name": "Compañias", "description": "Servicios para el modulo de compañias"},
+    {"name": "Campañas", "description": "Servicios para el modulo de compañas"},
+    {"name": "Agrupaciones", "description": "Servicios para el modulo de agrupaciones"},
+]

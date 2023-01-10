@@ -13,6 +13,8 @@ class B2C_Settings:
     SCOPE = os.getenv("SCOPE")
     BASE_URL_GRAPH = os.getenv("BASE_URL_GRAPH")
 
+class AZURE_Blob_Settings:
+    STRING_CONNECTION = os.getenv("AZURE_BLOB_STORAGE_STRING_CONNECTION")
 
 class DB_Settings:
     HOST = os.getenv("DB_HOST")
@@ -28,6 +30,7 @@ class Settings:
     URL_PREFIX = "/api/v1"
     DB_CONNECTION = DB_Settings()
     AZURE_B2C = B2C_Settings()
+    AZURE_BLOB_STORAGE = AZURE_Blob_Settings()
 
 
 settings = Settings()
